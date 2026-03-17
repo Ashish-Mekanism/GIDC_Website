@@ -1,0 +1,21 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const validate_1 = __importDefault(require("../../../middlewares/validate"));
+const userValidationss_1 = __importDefault(require("../../../validations/userValidationss"));
+const authController_1 = __importDefault(require("../../../controllers/user/authController"));
+const helper_1 = require("../../../utils/helper");
+const auth_1 = require("../../../middlewares/auth");
+const commonValidations_1 = __importDefault(require("../../../validations/commonValidations"));
+const router = (0, express_1.Router)();
+router.post('/login', (0, helper_1.uploadNone)(), (0, validate_1.default)(userValidationss_1.default.loginUserSchema), authController_1.default.loginUser);
+router.post('/logout', auth_1.userAuth.authenticate, authController_1.default.logoutUser);
+router.post('/register', (0, helper_1.uploadNone)(), (0, validate_1.default)(userValidationss_1.default.registerUserSchema), authController_1.default.registerUser);
+router.post('/verify-email', authController_1.default.verifyEmail);
+router.post('/request-password-forgot', (0, helper_1.uploadNone)(), (0, validate_1.default)(commonValidations_1.default.sendPasswordForgotEmailSchema), authController_1.default.sendPasswordForgotEmailUser);
+router.post('/verify-password-forgot', (0, helper_1.uploadNone)(), (0, validate_1.default)(commonValidations_1.default.verifyPasswordForgotSchema), authController_1.default.verifyForgotPasswordTokenUser);
+router.post('/reset-password', (0, helper_1.uploadNone)(), auth_1.userAuth.authenticate, (0, validate_1.default)(commonValidations_1.default.resetPasswordSchema), authController_1.default.resetPassword);
+exports.default = router;

@@ -1,0 +1,22 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const helper_1 = require("../../../utils/helper");
+const authController_1 = __importDefault(require("../../../controllers/admin/v1/authController"));
+const auth_1 = require("../../../middlewares/auth");
+const validate_1 = __importDefault(require("../../../middlewares/validate"));
+const adminValidations_1 = __importDefault(require("../../../validations/adminValidations"));
+const commonValidations_1 = __importDefault(require("../../../validations/commonValidations"));
+const router = (0, express_1.Router)();
+router.post('/register', (0, helper_1.uploadNone)(), auth_1.adminAuth.authenticate, authController_1.default.adminRegisterUser);
+router.post('/login', (0, helper_1.uploadNone)(), (0, validate_1.default)(adminValidations_1.default.adminLoginSchema), authController_1.default.adminLogin);
+router.post('/logout', auth_1.adminOrSubAdminAuth.authenticate, authController_1.default.adminLogout);
+router.post('/request-password-reset', (0, helper_1.uploadNone)(), (0, validate_1.default)(commonValidations_1.default.sendPasswordResetEmailSchema), authController_1.default.adminSendPasswordResetEmail);
+router.post('/verify-password-reset', (0, helper_1.uploadNone)(), (0, validate_1.default)(commonValidations_1.default.verifyPasswordResetSchema), authController_1.default.adminVerifyResetPasswordToken);
+router.get('/subAdminList', auth_1.adminAuth.authenticate, authController_1.default.getSubAdminList);
+router.put('/subAdmin/:id', (0, helper_1.uploadNone)(), auth_1.adminAuth.authenticate, authController_1.default.updateSubAdmin);
+router.post('/generate-new-user-password', (0, helper_1.uploadNone)(), auth_1.adminAuth.authenticate, (0, validate_1.default)(adminValidations_1.default.generateNewUserPasswordSchema), authController_1.default.generateNewUserPassword);
+exports.default = router;
