@@ -81,6 +81,11 @@ app.use(
 //Hello
 
 // routes
+
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "success", message: "Server is healthy" });
+});
+
 app.use("/oiabackend", routes);
 app.get("/shutdown", async (req, res) => {
   res.send("Server shutting down...");

@@ -1,4 +1,3 @@
-
 // import app from './app';
 // import logger from './src/config/logger';
 // import { Server } from 'http';
@@ -42,7 +41,6 @@
 // process.on('uncaughtException', unexpectedErrorHandler);
 // process.on('unhandledRejection', unexpectedErrorHandler);
 
-
 import dotenv from "dotenv";
 dotenv.config(); // must be FIRST
 import app from "./app";
@@ -80,7 +78,9 @@ connectDB()
         const credentials = { key: privateKey, cert: certificate, ca: ca };
         server = createHttpsServer(credentials, app);
       } catch (error) {
-        logger.error(`❌ Failed to start HTTPS server: ${(error as Error).message}`);
+        logger.error(
+          `❌ Failed to start HTTPS server: ${(error as Error).message}`
+        );
         process.exit(1);
       }
     } else {
@@ -95,8 +95,9 @@ connectDB()
       logger.info(`            🧰  DB Connected  🧰                  `);
       logger.info(` ⚡  Server successfully running on port ${PORT} ⚡`);
       logger.info(`          Environment: ${Config.NODE_ENV}         `);
-    })
-  }).then(() => {
+    });
+  })
+  .then(() => {
     seederInit();
     //processCSV();
   })
@@ -123,5 +124,3 @@ const unexpectedErrorHandler = (error: Error) => {
 
 process.on("uncaughtException", unexpectedErrorHandler);
 process.on("unhandledRejection", unexpectedErrorHandler);
-
-
