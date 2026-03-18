@@ -46,63 +46,65 @@ dotenv.config(); // must be FIRST
 import app from "./app";
 import logger from "./src/config/logger";
 import { Server, createServer } from "http";
-import { createServer as createHttpsServer } from "https";
-import fs from "fs";
+// import { createServer as createHttpsServer } from "https";
+// import fs from "fs";
 import connectDB from "./src/config/serverInit";
 import Config from "./src/config";
 import seederInit from "./src/config/seederInit";
-import { NODE_ENVIRONMENT } from "./src/utils/constants";
+// import { NODE_ENVIRONMENT } from "./src/utils/constants";
 
 const PORT = Config.PORT || 5000;
 let server: Server | undefined;
 
 ////////////////////  Start Server ////////////////////
+
+// connectDB()
+//   .then(() => {
+//     server = createServer(app);
+
+//     server.listen(PORT, () => {
+//       console.log(`Server running on port ${PORT}`);
+//     });
+//   })
+//   .then(() => {
+//     seederInit();
+//   })
+//   .catch((error) => {
+//     console.error("🔥 SERVER ERROR:", error);
+//     process.exit(1);
+//   });
+//   .then((server) => {
+//     server.listen(PORT, () => {
+//       logger.info(`                                                   `);
+//       logger.info(`            🧰  DB Connected  🧰                  `);
+//       logger.info(` ⚡  Server successfully running on port ${PORT} ⚡`);
+//       logger.info(`          Environment: ${Config.NODE_ENV}         `);
+//     });
+//   })
+//   .then(() => {
+//     seederInit();
+//     //processCSV();
+//   })
+//   .catch((error) => {
+//     logger.error(`Failed to start the server: ${error.message}`);
+//     process.exit(1);
+//   });
+
 connectDB()
   .then(() => {
-    if (Config.NODE_ENV === NODE_ENVIRONMENT.PRODUCTION) {
-      try {
-        // Load SSL certificates
-        const privateKey = fs.readFileSync(
-          "/etc/letsencrypt/live/matchnmeet.io/privkey.pem",
-          "utf8"
-        );
-        const certificate = fs.readFileSync(
-          "/etc/letsencrypt/live/matchnmeet.io/cert.pem",
-          "utf8"
-        );
-        const ca = fs.readFileSync(
-          "/etc/letsencrypt/live/matchnmeet.io/chain.pem",
-          "utf8"
-        );
+    logger.info("🧰 DB Connected");
 
-        const credentials = { key: privateKey, cert: certificate, ca: ca };
-        server = createHttpsServer(credentials, app);
-      } catch (error) {
-        logger.error(
-          `❌ Failed to start HTTPS server: ${(error as Error).message}`
-        );
-        process.exit(1);
-      }
-    } else {
-      server = createServer(app);
-      logger.info("✅ Using HTTP in development");
-    }
-    return server;
-  })
-  .then((server) => {
+    server = createServer(app);
+
     server.listen(PORT, () => {
-      logger.info(`                                                   `);
-      logger.info(`            🧰  DB Connected  🧰                  `);
-      logger.info(` ⚡  Server successfully running on port ${PORT} ⚡`);
-      logger.info(`          Environment: ${Config.NODE_ENV}         `);
+      logger.info(`⚡ Server running on port ${PORT}`);
     });
   })
   .then(() => {
     seederInit();
-    //processCSV();
   })
   .catch((error) => {
-    logger.error(`Failed to start the server: ${error.message}`);
+    console.error("🔥 SERVER ERROR:", error);
     process.exit(1);
   });
 
